@@ -1,5 +1,4 @@
 import java.util.ArrayList;
-import java.sql.Time;
 import java.util.Date;
 import java.util.List;
 import java.util.Scanner;
@@ -20,7 +19,7 @@ public class BloodManager {
             System.out.println("1. Admin");
             System.out.println("2. Donor");
             System.out.println("3. Receiver");
-            System.out.println("4. Display All Donors and Receivers");
+            System.out.println("4. Display All Donations");
             System.out.println("5. Display Blood Stock");
             System.out.println("6. Receiver Request Blood");
             System.out.println("7. Exit");
@@ -39,7 +38,7 @@ public class BloodManager {
                     handleReceiver();
                     break;
                 case 4:
-                    displayAllDonorsAndReceivers();
+                    displayAllDonations();
                     break;
                 case 5:
                     displayBloodStock();
@@ -110,14 +109,19 @@ public class BloodManager {
             System.out.println("\nScheduling Appointment...");
             System.out.print("Enter Appointment Date (YYYY-MM-DD): ");
             String date = scanner.nextLine();
-            System.out.print("Enter Appointment Time: ");
-            String time = scanner.nextLine();
 
-            Appointment appointment = new Appointment(appointments.size() + 1, new Date(), Time.valueOf(time), "Scheduled", donor.getId(), matchedReceiver.getId());
+            Appointment appointment = new Appointment(appointments.size() + 1, new Date(), "Scheduled", donor.getId(), matchedReceiver.getId());
             appointments.add(appointment);
 
             System.out.println("\nAppointment Scheduled Successfully!");
             appointment.displayInfo();
+
+            // Record donation
+            Donation donation = new Donation(donations.size() + 1, new Date(), 1, donor.getId(), matchedReceiver.getId(), 1); // Assuming hospital ID is 1
+            donations.add(donation);
+
+            System.out.println("\nDonation Recorded Successfully!");
+            donation.displayInfo();
         } else {
             System.out.println("\nNo matching receiver found at the moment. Your blood will be saved to the stock.");
 
@@ -156,16 +160,10 @@ public class BloodManager {
         receiver.displayInfo();
     }
 
-    private static void displayAllDonorsAndReceivers() {
-        System.out.println("\n===== All Donors =====");
-        for (Donor donor : donors) {
-            donor.displayInfo();
-            System.out.println("-----------------------------");
-        }
-
-        System.out.println("\n===== All Receivers =====");
-        for (Receiver receiver : receivers) {
-            receiver.displayInfo();
+    private static void displayAllDonations() {
+        System.out.println("\n===== All Donations =====");
+        for (Donation donation : donations) {
+            donation.displayInfo();
             System.out.println("-----------------------------");
         }
     }
@@ -208,10 +206,8 @@ public class BloodManager {
                 System.out.println("\nScheduling Appointment...");
                 System.out.print("Enter Appointment Date (YYYY-MM-DD): ");
                 String date = scanner.nextLine();
-                System.out.print("Enter Appointment Time: ");
-                String time = scanner.nextLine();
 
-                Appointment appointment = new Appointment(appointments.size() + 1, new Date(), Time.valueOf(time), "Scheduled", donor.getId(), receiver.getId());
+                Appointment appointment = new Appointment(appointments.size() + 1, new Date(), "Scheduled", donor.getId(), receiver.getId());
                 appointments.add(appointment);
 
                 System.out.println("\nAppointment Scheduled Successfully!");
@@ -285,3 +281,4 @@ public class BloodManager {
                 return false;
         }
     }
+}
