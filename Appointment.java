@@ -1,4 +1,5 @@
 import java.util.Date;
+
 public class Appointment {
     private int appointmentID;
     private Date date;
